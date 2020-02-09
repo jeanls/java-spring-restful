@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("users")
 public class UserController {
@@ -29,9 +31,18 @@ public class UserController {
         return new ResponseEntity<>(returnValue, HttpStatus.OK);
     }
 
-    @PostMapping
-    public String createUser() {
-        return "create user was called";
+    @PostMapping(
+            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
+    )
+    public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserRest userRest) {
+        UserRest returnValue = new UserRest();
+        returnValue.setFirstName(userRest.getFirstName());
+        returnValue.setLastName(userRest.getLastName());
+        returnValue.setEmail(userRest.getEmail());
+        returnValue.setPassword(userRest.getPassword());
+        returnValue.setUserId(1);
+        return new ResponseEntity<>(returnValue, HttpStatus.CREATED);
     }
 
     @PutMapping
