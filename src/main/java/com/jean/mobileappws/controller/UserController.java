@@ -30,7 +30,6 @@ public class UserController {
 
     @GetMapping(path = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-
         if (userRestMap.containsKey(userId)) {
             return new ResponseEntity<>(userRestMap.get(userId), HttpStatus.OK);
         }
@@ -61,13 +60,13 @@ public class UserController {
             path = "/{userId}",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-            )
+    )
     public ResponseEntity<UserRest> updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserRequest updateUserRequest) {
-        if(Objects.isNull(userRestMap)){
+        if (Objects.isNull(userRestMap)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if(!userRestMap.containsKey(userId)){
+        if (!userRestMap.containsKey(userId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
