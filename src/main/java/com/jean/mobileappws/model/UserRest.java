@@ -16,7 +16,7 @@ public class UserRest {
     @Size(min = 8, max = 16, message = "password must be equal or grater than 8 characters and less than 16 characters")
     private String password;
 
-    private Integer userId;
+    private String userId;
 
     public String getFirstName() {
         return firstName;
@@ -42,11 +42,11 @@ public class UserRest {
         this.email = email;
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

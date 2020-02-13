@@ -1,16 +1,23 @@
 package com.jean.mobileappws.controller;
 
 import com.jean.mobileappws.model.UserRest;
+import com.jean.mobileappws.model.request.UpdateUserRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("users")
 public class UserController {
+
+    Map<String, UserRest> userRestMap;
 
     @GetMapping
     public String getUsers(
@@ -21,14 +28,13 @@ public class UserController {
         return "get users was called with page = " + page + " and limit = " + limit + " and sort = " + sort;
     }
 
-    @GetMapping(path = "/{userId}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UserRest> getUser(@PathVariable Integer userId) {
-        UserRest returnValue = new UserRest();
-        returnValue.setEmail("jean.leal22@gmail.com");
-        returnValue.setFirstName("Jean");
-        returnValue.setLastName("Leal");
-        returnValue.setUserId(userId);
-        return new ResponseEntity<>(returnValue, HttpStatus.OK);
+    @GetMapping(path = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
+
+        if (userRestMap.containsKey(userId)) {
+            return new ResponseEntity<>(userRestMap.get(userId), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(
@@ -41,13 +47,34 @@ public class UserController {
         returnValue.setLastName(userRest.getLastName());
         returnValue.setEmail(userRest.getEmail());
         returnValue.setPassword(userRest.getPassword());
-        returnValue.setUserId(1);
+        returnValue.setUserId(UUID.randomUUID().toString());
+
+        if (userRestMap == null) {
+            userRestMap = new HashMap<>();
+        }
+
+        userRestMap.put(returnValue.getUserId(), returnValue);
         return new ResponseEntity<>(returnValue, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "update user was called";
+    @PutMapping(
+            path = "/{userId}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+            )
+    public ResponseEntity<UserRest> updateUser(@PathVariable String userId, @Valid @RequestBody UpdateUserRequest updateUserRequest) {
+        if(Objects.isNull(userRestMap)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(!userRestMap.containsKey(userId)){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        UserRest returnValue = userRestMap.get(userId);
+        returnValue.setFirstName(updateUserRequest.getFirstName());
+        returnValue.setLastName(updateUserRequest.getLastName());
+        return new ResponseEntity<>(returnValue, HttpStatus.OK);
     }
 
     @DeleteMapping
