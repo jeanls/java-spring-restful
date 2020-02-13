@@ -1,6 +1,6 @@
 package com.jean.mobileappws.controller;
 
-import com.jean.mobileappws.model.UserRest;
+import com.jean.mobileappws.model.response.UserRest;
 import com.jean.mobileappws.model.request.UpdateUserRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +30,8 @@ public class UserController {
 
     @GetMapping(path = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
+        String t = null;
+        int a = t.length();
         if (userRestMap.containsKey(userId)) {
             return new ResponseEntity<>(userRestMap.get(userId), HttpStatus.OK);
         }

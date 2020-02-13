@@ -1,4 +1,4 @@
-package com.jean.mobileappws.model;
+package com.jean.mobileappws.model.response;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
