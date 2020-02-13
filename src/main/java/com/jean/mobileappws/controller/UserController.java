@@ -1,7 +1,10 @@
 package com.jean.mobileappws.controller;
 
+import com.jean.mobileappws.exceptions.UserServiceException;
 import com.jean.mobileappws.model.response.UserRest;
 import com.jean.mobileappws.model.request.UpdateUserRequest;
+import com.jean.mobileappws.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,9 @@ public class UserController {
 
     Map<String, UserRest> userRestMap;
 
+    @Autowired
+    UserService userService;
+
     @GetMapping
     public String getUsers(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -30,8 +36,7 @@ public class UserController {
 
     @GetMapping(path = "/{userId}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserRest> getUser(@PathVariable String userId) {
-        String t = null;
-        int a = t.length();
+        if (true) throw new NullPointerException();
         if (userRestMap.containsKey(userId)) {
             return new ResponseEntity<>(userRestMap.get(userId), HttpStatus.OK);
         }
@@ -43,19 +48,7 @@ public class UserController {
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<UserRest> createUser(@Valid @RequestBody UserRest userRest) {
-        UserRest returnValue = new UserRest();
-        returnValue.setFirstName(userRest.getFirstName());
-        returnValue.setLastName(userRest.getLastName());
-        returnValue.setEmail(userRest.getEmail());
-        returnValue.setPassword(userRest.getPassword());
-        returnValue.setUserId(UUID.randomUUID().toString());
-
-        if (userRestMap == null) {
-            userRestMap = new HashMap<>();
-        }
-
-        userRestMap.put(returnValue.getUserId(), returnValue);
-        return new ResponseEntity<>(returnValue, HttpStatus.CREATED);
+        return userService.createUser(userRest);
     }
 
     @PutMapping(
